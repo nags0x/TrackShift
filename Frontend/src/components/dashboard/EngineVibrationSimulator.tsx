@@ -1,5 +1,5 @@
 import { LineChart } from '@mui/x-charts/LineChart';
-import { XAxis } from '@mui/x-charts/models';
+import { XAxis, YAxis } from '@mui/x-charts/models';
 import { chartsGridClasses } from '@mui/x-charts/ChartsGrid';
 
 
@@ -13,12 +13,24 @@ import {
 const xAxis: XAxis<'time'>[] = [
   {
     dataKey: 'date',
+    label: 'Frequency',
+    labelStyle: {
+      fill: '#ccc',      // label color
+      fontSize: 14,
+      margin:0
+    },
     scaleType: 'time',
     valueFormatter: dateAxisFormatter,
   },
 ];
-const yAxis = [
+const yAxis: YAxis<'time'>[] = [
   {
+    label: 'Amplitude',          // fixed spelling
+    labelStyle: {
+      fill: '#ccc',
+      fontSize: 14,
+      margin: 0,
+    },
     valueFormatter: percentageFormatter,
   },
 ];
@@ -32,7 +44,9 @@ const series = [
 ];
 export default function GridDemo() {
   return (
-<div className="flex-col relative bg-racing-panel/50 rounded-2xl border border-racing-border/50 backdrop-blur-sm flex justify-center items-center pr-10 py-2">
+<div className="flex-col relative bg-racing-panel/50 rounded-2xl border border-racing-border/50 backdrop-blur-sm flex justify-center items-center pr-10 py-5">
+<span className='font-mono font-bold'>Engine Vibration</span>
+
   <div className="w-full max-w-[800px]"> 
     <LineChart
       dataset={usUnemploymentRate}
@@ -51,7 +65,6 @@ export default function GridDemo() {
       }}
     />
   </div>
-  <span className='font-mono font-bold'>Engine Vibration</span>
 </div>
 
   );
