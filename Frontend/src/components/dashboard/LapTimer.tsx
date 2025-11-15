@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 interface LapTimerProps {
   currentLap: string;
-  delta: string;
+  delta: number,
   bestLap: string;
   lastLap: string;
 }

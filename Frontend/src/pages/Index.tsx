@@ -17,59 +17,59 @@ let gear = 1;
 let steering = 0;
 let fuel = 10;
 
-function generateTelemetry(): data {
+// function generateTelemetry(): data {
 
-  // --- SPEED SIMULATION ---
-  const accel = Math.random() * 3;         // 0–3 m/s²
-  const brakeForce = Math.random() > 0.9 ? Math.random() * 6 : 0;  
+//   // --- SPEED SIMULATION ---
+//   const accel = Math.random() * 3;         // 0–3 m/s²
+//   const brakeForce = Math.random() > 0.9 ? Math.random() * 6 : 0;  
 
-  speed += accel - brakeForce;
-  speed = Math.max(0, Math.min(320, speed)); // typical car top speed
-    
-  // --- RPM SIMULATION ---
-  rpm = (gear * 1000) + (speed * 30) + (Math.random() * 200 - 100);
-  rpm = Math.max(800, Math.min(9000, rpm));
+//   speed += accel - brakeForce;
+//   speed = Math.max(0, Math.min(320, speed)); // typical car top speed
 
-  // --- GEAR SHIFTING ---
-  if (rpm > 8200 && gear < 7) gear++;
-  if (rpm < 1500 && gear > 1) gear--;
+//   // --- RPM SIMULATION ---
+//   rpm = (gear * 1000) + (speed * 30) + (Math.random() * 200 - 100);
+//   rpm = Math.max(800, Math.min(9000, rpm));
 
-  // --- STEERING ---
-  steering += (Math.random() - 0.5) * 8;  // smoother
-  steering = Math.max(-270, Math.min(270, steering));
+//   // --- GEAR SHIFTING ---
+//   if (rpm > 8200 && gear < 7) gear++;
+//   if (rpm < 1500 && gear > 1) gear--;
 
-  // --- BRAKE / THROTTLE ---
-  const throttle = Number(Math.max(0, Math.min(100, 50 + (Math.random() - 0.5) * 40)).toFixed(2));
-  const brake = brakeForce > 0 ? Number((brakeForce * 20).toFixed(2)) : Number((Math.random() * 5).toFixed(2));
+//   // --- STEERING ---
+//   steering += (Math.random() - 0.5) * 8;  // smoother
+//   steering = Math.max(-270, Math.min(270, steering));
 
-  // --- FUEL USE ---
-  fuel -= 0.002;
-  if (fuel < 0) fuel = 10;
+//   // --- BRAKE / THROTTLE ---
+//   const throttle = Number(Math.max(0, Math.min(100, 50 + (Math.random() - 0.5) * 40)).toFixed(2));
+//   const brake = brakeForce > 0 ? Number((brakeForce * 20).toFixed(2)) : Number(Math.random() * 5).toFixed(2);
 
-  // --- TIRE TEMPS ---
-  const baseTire = 80 + speed * 0.1;
-  const tireTemps = {
-    fl: baseTire + Math.random() * 5 - 2,
-    fr: baseTire + Math.random() * 5 - 2,
-    rl: baseTire + Math.random() * 5 - 2,
-    rr: baseTire + Math.random() * 5 - 2,
-  };
+//   // --- FUEL USE ---
+//   fuel -= 0.002;
+//   if (fuel < 0) fuel = 10;
 
-  // --- TRACK POSITION ---
-  const trackPosition = (speed / 3200) % 1;
+//   // --- TIRE TEMPS ---
+//   const baseTire = 80 + speed * 0.1;
+//   const tireTemps = {
+//     fl: baseTire + Math.random() * 5 - 2,
+//     fr: baseTire + Math.random() * 5 - 2,
+//     rl: baseTire + Math.random() * 5 - 2,
+//     rr: baseTire + Math.random() * 5 - 2,
+//   };
 
-  return {
-    speed,
-    rpm,
-    brake,
-    throttle,
-    steering,
-    gear,
-    fuel,
-    tireTemps,
-    trackPosition,
-  };
-}
+//   // --- TRACK POSITION ---
+//   const trackPosition = (speed / 3200) % 1;
+
+// //   return {
+// //     peed,
+// //     rpm,
+// //     brake,
+// //     throttle,
+// //     steering,
+// //     gear,
+// //     fuel,
+// //     tireTemps,
+// //     trackPosition,
+// //   };
+// // }
 
 const Index = () => {
   // Simulated telemetry data with realistic racing values
@@ -79,8 +79,8 @@ const Index = () => {
   // Simulate real-time data updates
   useEffect(() => {
     const interval = setInterval(() => {
-      const newTelemetry:data = generateTelemetry()
-    setTelemetry(newTelemetry)
+      // const newTelemetry:data = generateTelemetry()
+    // setTelemetry(newTelemetry)
     },100)
 
     const client = () =>{
@@ -103,7 +103,7 @@ const Index = () => {
           <div className="flex justify-start md:justify-start">
             <LapTimer
               currentLap="02:36.937"
-              delta="+0.087"
+              delta={telemetry.LapDelta}
               bestLap="06:43.305"
               lastLap="06:44.453"
             />
@@ -115,9 +115,9 @@ const Index = () => {
           
           <div className="flex justify-end md:justify-end">
             <WeatherWidget
-              condition="Variably cloudy"
-              temperature="24°C"
-              windSpeed="10-15 mph"
+              condition={telemetry.WeatherCondition}
+              temperature={telemetry.WeatherTemp}
+              windSpeed={telemetry.WeatherWind}
             />
           </div>
         </header>
@@ -126,25 +126,25 @@ const Index = () => {
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center justify-items-center">
           {/* Speedometer */}
           <CircularGauge
-            value={telemetry.speed}
+            value={telemetry.Speed}
             max={400}
             unit="km/h"
             label="speed"
             redZone={300}
             glowColor="hsl(var(--racing-blue))"
             showGear
-            gear={telemetry.gear}
+            gear={telemetry.nGear}
           />
 
           {/* Brake & Throttle */}
             <BrakeThrottleBars
-              brake={telemetry.brake}
-              throttle={telemetry.throttle}
+              brake={telemetry.Brake}
+              throttle={telemetry.Throttle}
             />
 
           {/* Tachometer */}
           <CircularGauge
-            value={telemetry.rpm}
+            value={telemetry.RPM}
             max={9000}
             unit="rpm"
             label="rpm"
@@ -156,19 +156,19 @@ const Index = () => {
         {/* Bottom Row */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Steering Wheel */}
-          <SteeringWheel rotation={telemetry.steering} />
+          {/* <SteeringWheel rotation={telemetry.s} /> */}
 
           {/* Track Map */}
           <TrackMap
             trackName="Nürburgring"
             location="Germany"
-            position={telemetry.trackPosition}
+            position={telemetry.TrackPosition}
           />
 
           {/* Tire & Fuel Panel */}
           <TireFuelPanel
-            tireTemps={telemetry.tireTemps}
-            fuel={telemetry.fuel}
+            tireTemps={telemetry.Tiretemps}
+            fuel={telemetry.Fuel}
             maxFuel={100}
           />
         </section>

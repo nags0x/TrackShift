@@ -2,8 +2,8 @@ import { Cloud, Thermometer, Wind } from "lucide-react";
 
 interface WeatherWidgetProps {
   condition: string;
-  temperature: string;
-  windSpeed: string;
+  temperature: number;
+  windSpeed: number;
 }
 
 const WeatherWidget = ({ condition, temperature, windSpeed }: WeatherWidgetProps) => {

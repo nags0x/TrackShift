@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import type {Socket} from 'socket.io-client';
 import { SocketEvents } from './SocketEvents';
+import { data, useUserData } from '@/store/userData.store';
 
 interface TelemetryData {
     Date: string;
@@ -41,22 +42,50 @@ export class ClientServer{
 
         const textDecoder = new TextDecoder('utf-8')
         const text = textDecoder.decode(payload)
+        // console.log("::: data" ,text)
         const values:string[] = text.split(',');
-        console.log("yoo: ",values)
-        const telemetry: TelemetryData = {
-            Date: (values[0]) ,
-            Session: (values[1]) ,
-            Time: (values[2]) ,
-            RPM: (values[3]) ,
-            Speed: (values[4]) ,
-            Gear: (values[5]) ,
-            Throttle: (values[6]) ,
-            Break: (values[7]),
-            State: (values[8]) ,
-            Driver: (values[9]) 
+
+        // console.log("brake:: ",values[7])
+        const telemetry: data = {
+            Date: values[0] || "",
+            SessionTime: Number(values[1]) || 0,
+            Time: Number(values[2]) || 0,
+            RPM: Number(values[3]) || 0,
+            Speed: Number(values[4]) || 0,
+            nGear: Number(values[5]) || 0,
+            Throttle: Number(Number(values[6]).toFixed(2)) || 0,
+            Brake: values[7] === 'False' ? false : true,
+            Status: values[8] || "",
+            Driver: values[9] || "",
+            ES: Number(values[10]) || 0,
+            Time_td: Number(values[11]) || 0,
+            TrackPosition: Number(values[12]) || 0,
+            CurrentLap: Number(values[13]) || 0,
+            BestLap: Number(values[14]) || 0,
+            LastLap: Number(values[15]) || 0,
+            LapDelta: Number(values[16]) || 0,
+            WeatherCondition: values[17] || "",
+            WeatherTemp: Number(values[18]) || 0,
+            WeatherWind: Number(values[19]) || 0,
+            EngineVibration: Number(values[20]) || 0,
+          
+            Tiretemps: {
+              fl: Number(values[21]) || 0,
+              fr: Number(values[22]) || 0,
+              rl: Number(values[23]) || 0,
+              rr: Number(values[24]) || 0,
+            },
+          
+            Fuel: Number(values[25]) || 0,
+            TrackName: values[26] || "",
+            TrackLocation: values[27] || "",
           };
-          console.log("hh");
-          console.log(telemetry);   
+        
+        //   console.log(telemetry.EngineVibration)
+        // console.log("brake:: ",telemetry.Brake)
+
+          useUserData.getState().setData(telemetry)
+
 
     })
     this.clientSocket.on(SocketEvents.WELCOME, (data:string)=>{
