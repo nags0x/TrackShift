@@ -1,3 +1,4 @@
+import { ClientServer } from "@/server/client-server";
 import { motion } from "framer-motion";
 import { Gauge } from "lucide-react";
 
@@ -6,6 +7,7 @@ interface SteeringWheelProps {
 }
 
 const SteeringWheel = ({ rotation }: SteeringWheelProps) => {
+
   return (
     <div className="relative bg-racing-panel/50  rounded-2xl p-4 border border-border backdrop-blur-sm overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent" />

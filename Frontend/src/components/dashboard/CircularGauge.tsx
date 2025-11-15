@@ -129,8 +129,8 @@ const CircularGauge = ({
         </div>
       )}
 
-      {/* Scale markers */}
-      <div className="absolute inset-0">
+
+      {/* <div className="absolute inset-0">
         {[0, 50, 100, 150, 200, 250, 300, 350, 400].map((mark, i) => {
           if (mark > max) return null;
           const markAngle = ((mark / max) * 270 - 135) * (Math.PI / 180);
@@ -149,7 +149,7 @@ const CircularGauge = ({
             </text>
           );
         })}
-      </div>
+      </div> */}
 
       {/* Needle */}
       <motion.div

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Fuel } from "lucide-react";
+import { Fuel } from "lucide-react";  
 
 interface TireFuelPanelProps {
   tireTemps: {
@@ -17,9 +17,23 @@ const TireFuelPanel = ({ tireTemps, fuel, maxFuel = 100 }: TireFuelPanelProps) =
   const isLowFuel = fuel < 20;
 
   const getTireColor = (temp: number) => {
-    if (temp > 100) return "text-tire-hot";
-    if (temp > 80) return "text-tire-warm";
-    return "text-foreground";
+    // Direct HSL values based on CSS variables:
+    // --tire-hot: 16 100% 50% (orange-red)
+    // --tire-warm: 30 100% 50% (orange)
+    // --foreground: 0 0% 100% (white)
+    if (temp >= 100) return "#FF6B35"; // Orange-red (hsl(16, 100%, 50%))
+    if (temp >= 80) return "#FFFF00"; // Orange (hsl(30, 100%, 50%))
+    return "#00FF00"; //green
+  };
+
+  const getTireBackgroundColor = (temp: number) => {
+    // Background colors - darker versions for better contrast
+    // --tire-hot: 16 100% 50% -> darker at 30% lightness
+    // --tire-warm: 30 100% 50% -> darker at 35% lightness
+    // --racing-border: 0 0% 20% (default dark grey)
+    if (temp >= 100) return "hsl(16, 100%, 30%)"; // Dark orange-red for hot
+    if (temp >= 80) return "hsl(30, 100%, 35%)"; // Dark orange for warm
+    return "hsl(var(--racing-border))"; // Default border color
   };
 
   return (
@@ -29,30 +43,74 @@ const TireFuelPanel = ({ tireTemps, fuel, maxFuel = 100 }: TireFuelPanelProps) =
         <div className="grid grid-cols-2 gap-2">
           {/* Front tires */}
           <div className="text-center">
-            <div className={`text-lg font-bold font-mono ${getTireColor(tireTemps.fl)}`}>
+            <div 
+              className="text-lg font-bold font-mono" 
+              style={{ 
+                color: getTireColor(tireTemps.fl),
+                display: 'inline-block' 
+              }}
+            >
               {tireTemps.fl}
             </div>
-            <div className="w-8 h-10 bg-racing-border rounded-sm mx-auto mt-1" />
+            <div 
+              className="w-8 h-10 rounded-sm mx-auto mt-1" 
+              style={{ 
+                backgroundColor: getTireBackgroundColor(tireTemps.fl) 
+              }}
+            />
           </div>
           <div className="text-center">
-            <div className={`text-lg font-bold font-mono ${getTireColor(tireTemps.fr)}`}>
+            <div 
+              className="text-lg font-bold font-mono" 
+              style={{ 
+                color: getTireColor(tireTemps.fr),
+                display: 'inline-block' 
+              }}
+            >
               {tireTemps.fr}
             </div>
-            <div className="w-8 h-10 bg-racing-border rounded-sm mx-auto mt-1" />
+            <div 
+              className="w-8 h-10 rounded-sm mx-auto mt-1" 
+              style={{ 
+                backgroundColor: getTireBackgroundColor(tireTemps.fr) 
+              }}
+            />
           </div>
           
           {/* Rear tires */}
           <div className="text-center">
-            <div className={`text-lg font-bold font-mono ${getTireColor(tireTemps.rl)}`}>
+            <div 
+              className="text-lg font-bold font-mono" 
+              style={{ 
+                color: getTireColor(tireTemps.rl),
+                display: 'inline-block' 
+              }}
+            >
               {tireTemps.rl}
             </div>
-            <div className="w-8 h-10 bg-racing-border rounded-sm mx-auto mt-1" />
+            <div 
+              className="w-8 h-10 rounded-sm mx-auto mt-1" 
+              style={{ 
+                backgroundColor: getTireBackgroundColor(tireTemps.rl) 
+              }}
+            />
           </div>
           <div className="text-center">
-            <div className={`text-lg font-bold font-mono ${getTireColor(tireTemps.rr)}`}>
+            <div 
+              className="text-lg font-bold font-mono" 
+              style={{ 
+                color: getTireColor(tireTemps.rr),
+                display: 'inline-block' 
+              }}
+            >
               {tireTemps.rr}
             </div>
-            <div className="w-8 h-10 bg-racing-border rounded-sm mx-auto mt-1" />
+            <div 
+              className="w-8 h-10 rounded-sm mx-auto mt-1" 
+              style={{ 
+                backgroundColor: getTireBackgroundColor(tireTemps.rr) 
+              }}
+            />
           </div>
         </div>
 

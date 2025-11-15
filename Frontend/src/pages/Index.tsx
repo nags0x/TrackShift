@@ -7,41 +7,87 @@ import SteeringWheel from "@/components/dashboard/SteeringWheel";
 import TrackMap from "@/components/dashboard/TrackMap";
 import TireFuelPanel from "@/components/dashboard/TireFuelPanel";
 import HaasLogo from "@/components/dashboard/HaasLogo";
+import { ClientServer } from "@/server/client-server";
+import { data, useUserData } from "@/store/userData.store";
+
+
+let speed = 0;
+let rpm = 900;
+let gear = 1;
+let steering = 0;
+let fuel = 10;
+
+function generateTelemetry(): data {
+
+  // --- SPEED SIMULATION ---
+  const accel = Math.random() * 3;         // 0–3 m/s²
+  const brakeForce = Math.random() > 0.9 ? Math.random() * 6 : 0;  
+
+  speed += accel - brakeForce;
+  speed = Math.max(0, Math.min(320, speed)); // typical car top speed
+    
+  // --- RPM SIMULATION ---
+  rpm = (gear * 1000) + (speed * 30) + (Math.random() * 200 - 100);
+  rpm = Math.max(800, Math.min(9000, rpm));
+
+  // --- GEAR SHIFTING ---
+  if (rpm > 8200 && gear < 7) gear++;
+  if (rpm < 1500 && gear > 1) gear--;
+
+  // --- STEERING ---
+  steering += (Math.random() - 0.5) * 8;  // smoother
+  steering = Math.max(-270, Math.min(270, steering));
+
+  // --- BRAKE / THROTTLE ---
+  const throttle = Number(Math.max(0, Math.min(100, 50 + (Math.random() - 0.5) * 40)).toFixed(2));
+  const brake = brakeForce > 0 ? Number((brakeForce * 20).toFixed(2)) : Number((Math.random() * 5).toFixed(2));
+
+  // --- FUEL USE ---
+  fuel -= 0.002;
+  if (fuel < 0) fuel = 10;
+
+  // --- TIRE TEMPS ---
+  const baseTire = 80 + speed * 0.1;
+  const tireTemps = {
+    fl: baseTire + Math.random() * 5 - 2,
+    fr: baseTire + Math.random() * 5 - 2,
+    rl: baseTire + Math.random() * 5 - 2,
+    rr: baseTire + Math.random() * 5 - 2,
+  };
+
+  // --- TRACK POSITION ---
+  const trackPosition = (speed / 3200) % 1;
+
+  return {
+    speed,
+    rpm,
+    brake,
+    throttle,
+    steering,
+    gear,
+    fuel,
+    tireTemps,
+    trackPosition,
+  };
+}
 
 const Index = () => {
   // Simulated telemetry data with realistic racing values
-  const [telemetry, setTelemetry] = useState({
-    speed: 325,
-    rpm: 6587,
-    brake: 19,
-    throttle: 65,
-    steering: 24,
-    gear: 4,
-    fuel: 79.6,
-    tireTemps: { fl: 271, fr: 270, rl: 264, rr: 266 },
-    trackPosition: 0.35,
-  });
+  const telemetry = useUserData((state)=>state.Data);
+  const setTelemetry = useUserData((state)=>state.setData)
 
   // Simulate real-time data updates
   useEffect(() => {
     const interval = setInterval(() => {
-      setTelemetry((prev) => ({
-        speed: Math.max(0, Math.min(400, prev.speed + (Math.random() - 0.5) * 20)),
-        rpm: Math.max(0, Math.min(9000, prev.rpm + (Math.random() - 0.5) * 500)),
-        brake: Math.max(0, Math.min(100, prev.brake + (Math.random() - 0.5) * 30)),
-        throttle: Math.max(0, Math.min(100, prev.throttle + (Math.random() - 0.5) * 25)),
-        steering: Math.max(-270, Math.min(270, prev.steering + (Math.random() - 0.5) * 40)),
-        gear: Math.max(1, Math.min(7, prev.gear + (Math.random() > 0.95 ? (Math.random() > 0.5 ? 1 : -1) : 0))),
-        fuel: Math.max(0, prev.fuel - 0.01),
-        tireTemps: {
-          fl: Math.max(50, Math.min(300, prev.tireTemps.fl + (Math.random() - 0.5) * 2)),
-          fr: Math.max(50, Math.min(300, prev.tireTemps.fr + (Math.random() - 0.5) * 2)),
-          rl: Math.max(50, Math.min(300, prev.tireTemps.rl + (Math.random() - 0.5) * 2)),
-          rr: Math.max(50, Math.min(300, prev.tireTemps.rr + (Math.random() - 0.5) * 2)),
-        },
-        trackPosition: (prev.trackPosition + 0.001) % 1,
-      }));
-    }, 100);
+      const newTelemetry:data = generateTelemetry()
+    setTelemetry(newTelemetry)
+    },100)
+
+    const client = () =>{
+      const clientInstance = ClientServer.getInstance()
+    }
+
+    client()
 
     return () => clearInterval(interval);
   }, []);
@@ -91,10 +137,10 @@ const Index = () => {
           />
 
           {/* Brake & Throttle */}
-          <BrakeThrottleBars
-            brake={telemetry.brake}
-            throttle={telemetry.throttle}
-          />
+            <BrakeThrottleBars
+              brake={telemetry.brake}
+              throttle={telemetry.throttle}
+            />
 
           {/* Tachometer */}
           <CircularGauge
