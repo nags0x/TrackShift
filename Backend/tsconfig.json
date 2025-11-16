@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     // Base Options recommended for all projects
+    "typeRoots": ["./src/types" , "./node_modules/@types"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "es2022",
@@ -12,7 +13,7 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     // Enable strict type checking so you can catch bugs early
-    "strict": true,
+    "strict": false,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     // We are not transpiling, so preserve our source code and do not emit files

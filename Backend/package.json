@@ -1,9 +1,10 @@
 {
-  "name": "TrackShift",
+  "name": "trackshift",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,8 +12,11 @@
   "license": "ISC",
   "packageManager": "pnpm@10.12.1",
   "dependencies": {
+    "@fails-components/webtransport": "0.0.7",
+    "@fails-components/webtransport-transport-http3-quiche": "^1.4.4",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.5",
+    "@types/lz4js": "^0.2.2",
     "@types/node": "^24.10.1",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
