@@ -4,73 +4,12 @@ import WeatherWidget from "@/components/dashboard/WeatherWidget";
 import CircularGauge from "@/components/dashboard/CircularGauge";
 import BrakeThrottleBars from "@/components/dashboard/BrakeThrottleBars";
 import SteeringWheel from "@/components/dashboard/SteeringWheel";
-import TrackMap from "@/components/dashboard/TrackMap";
 import TireFuelPanel from "@/components/dashboard/TireFuelPanel";
 import HaasLogo from "@/components/dashboard/HaasLogo";
 import { ClientServer } from "@/server/client-server";
 import { data, useUserData } from "@/store/userData.store";
+import  VibrationLogMonitor  from "@/components/dashboard/Logs";
 
-
-
-let speed = 0;
-let rpm = 900;
-let gear = 1;
-let steering = 0;
-let fuel = 10;
-
-// function generateTelemetry(): data {
-
-//   // --- SPEED SIMULATION ---
-//   const accel = Math.random() * 3;         // 0–3 m/s²
-//   const brakeForce = Math.random() > 0.9 ? Math.random() * 6 : 0;  
-
-//   speed += accel - brakeForce;
-//   speed = Math.max(0, Math.min(320, speed)); // typical car top speed
-
-//   // --- RPM SIMULATION ---
-//   rpm = (gear * 1000) + (speed * 30) + (Math.random() * 200 - 100);
-//   rpm = Math.max(800, Math.min(9000, rpm));
-
-//   // --- GEAR SHIFTING ---
-//   if (rpm > 8200 && gear < 7) gear++;
-//   if (rpm < 1500 && gear > 1) gear--;
-
-//   // --- STEERING ---
-//   steering += (Math.random() - 0.5) * 8;  // smoother
-//   steering = Math.max(-270, Math.min(270, steering));
-
-//   // --- BRAKE / THROTTLE ---
-//   const throttle = Number(Math.max(0, Math.min(100, 50 + (Math.random() - 0.5) * 40)).toFixed(2));
-//   const brake = brakeForce > 0 ? Number((brakeForce * 20).toFixed(2)) : Number(Math.random() * 5).toFixed(2);
-
-//   // --- FUEL USE ---
-//   fuel -= 0.002;
-//   if (fuel < 0) fuel = 10;
-
-//   // --- TIRE TEMPS ---
-//   const baseTire = 80 + speed * 0.1;
-//   const tireTemps = {
-//     fl: baseTire + Math.random() * 5 - 2,
-//     fr: baseTire + Math.random() * 5 - 2,
-//     rl: baseTire + Math.random() * 5 - 2,
-//     rr: baseTire + Math.random() * 5 - 2,
-//   };
-
-//   // --- TRACK POSITION ---
-//   const trackPosition = (speed / 3200) % 1;
-
-// //   return {
-// //     peed,
-// //     rpm,
-// //     brake,
-// //     throttle,
-// //     steering,
-// //     gear,
-// //     fuel,
-// //     tireTemps,
-// //     trackPosition,
-// //   };
-// // }
 
 const Index = () => {
   // Simulated telemetry data with realistic racing values
@@ -159,12 +98,8 @@ const Index = () => {
           {/* Steering Wheel */}
           <SteeringWheel rotation={telemetry.Rotation} />
 
-          {/* Track Map */}
-          <TrackMap
-            trackName="Nürburgring"
-            location="Germany"
-            position={telemetry.TrackPosition}
-          />
+        {/*Logs*/}
+        <VibrationLogMonitor/>
 
           {/* Tire & Fuel Panel */}
           <TireFuelPanel

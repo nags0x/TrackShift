@@ -129,28 +129,6 @@ const CircularGauge = ({
         </div>
       )}
 
-
-      {/* <div className="absolute inset-0">
-        {[0, 50, 100, 150, 200, 250, 300, 350, 400].map((mark, i) => {
-          if (mark > max) return null;
-          const markAngle = ((mark / max) * 270 - 135) * (Math.PI / 180);
-          const x = 160 + 155 * Math.cos(markAngle);
-          const y = 160 + 155 * Math.sin(markAngle);
-          return (
-            <text
-              key={mark}
-              x={x}
-              y={y}
-              className="text-xs fill-muted-foreground font-mono"
-              textAnchor="middle"
-              dominantBaseline="middle"
-            >
-              {mark >= redZone ? "" : mark / 50 === Math.floor(mark / 50) ? mark : ""}
-            </text>
-          );
-        })}
-      </div> */}
-
       {/* Needle */}
       <motion.div
         className="absolute top-1/2 left-1/2 origin-left w-32 h-1.5"
