@@ -1,71 +1,72 @@
 import { LineChart } from '@mui/x-charts/LineChart';
 import { XAxis, YAxis } from '@mui/x-charts/models';
 import { chartsGridClasses } from '@mui/x-charts/ChartsGrid';
+import { useUserData } from '@/store/userData.store';
+import { useState, useEffect } from 'react';
 
+interface GridDemo {
+  SampleIndex: number;   // <-- streaming axis
+  Frequency: number;     // your original var
+  Amplitude: number;     // your original var
+}
 
-import {
-  dateAxisFormatter,
-  percentageFormatter,
-  usUnemploymentRate,
-} from '../tempDataSet.ts'
-
-
-const xAxis: XAxis<'time'>[] = [
+const xAxis = [
   {
-    dataKey: 'date',
-    label: 'Frequency',
-    labelStyle: {
-      fill: '#ccc',      // label color
-      fontSize: 14,
-      margin:0
-    },
-    scaleType: 'time',
-    valueFormatter: dateAxisFormatter,
+    dataKey: "SampleIndex",
+    label: "Samples",
+    scaleType: "linear",
+    labelStyle: { fill: "#ccc", fontSize: 14 },
   },
 ];
-const yAxis: YAxis<'time'>[] = [
+
+const yAxis = [
   {
-    label: 'Amplitude',          // fixed spelling
-    labelStyle: {
-      fill: '#ccc',
-      fontSize: 14,
-      margin: 0,
-    },
-    valueFormatter: percentageFormatter,
+    dataKey: "Amplitude",
+    label: "Amplitude",
+    valueFormatter: (v) => v.toFixed(2),
+    labelStyle: { fill: "#ccc", fontSize: 14 },
   },
 ];
-const series = [
-  {
-    dataKey: 'rate',
-    showMark: false,
-    valueFormatter: percentageFormatter,
-    color: '#FF0000'
-  },
-];
+
 export default function GridDemo() {
-  return (
-<div className="flex-col relative bg-racing-panel/50 rounded-2xl border border-racing-border/50 backdrop-blur-sm flex justify-center items-center pr-10 py-5">
-<span className='font-mono font-bold'>Engine Vibration</span>
+  const frequency = useUserData((s) => s.Data.Frequency);
+  const amplitude = useUserData((s) => s.Data.Amplitude);
 
-  <div className="w-full max-w-[800px]"> 
+  const [sampleIndex, setSampleIndex] = useState(0);
+  const [vibrationData, setVibrationData] = useState<GridDemo[]>([]);
+
+  useEffect(() => {
+    if (frequency === undefined || amplitude === undefined) return;
+
+    setSampleIndex((i) => i + 1);
+
+    setVibrationData((prev) => {
+      const updated = [
+        ...prev,
+        {
+          SampleIndex: sampleIndex, // keeps graph moving smoothly
+          Frequency: frequency,     // still stored!
+          Amplitude: amplitude,     // still stored!
+        },
+      ];
+      return updated.slice(-200); // rolling 200 samples
+    });
+  }, [frequency, amplitude]);
+
+  return (
     <LineChart
-      dataset={usUnemploymentRate}
+      dataset={vibrationData}
       xAxis={xAxis}
       yAxis={yAxis}
-      series={series}
-      height={300}
-      width={undefined}
-      grid={{ vertical: true, horizontal: true }}
-      sx={{
-        [`& .${chartsGridClasses.line}`]: {
-          stroke: "#999",
-          strokeDasharray: "5 3",
-          strokeWidth: 2,
+      series={[
+        {
+          dataKey: "Amplitude",
+          showMark: false,
+          color: "#FF0000",
         },
-      }}
+      ]}
+      height={300}
+      grid={{ vertical: true, horizontal: true }}
     />
-  </div>
-</div>
-
   );
 }

@@ -32,6 +32,7 @@ export interface data {
     Fuel: number,
     TrackName: string,
     TrackLocation: string,
+    Rotation: number
 }
 
 type userDataComplete = {
@@ -72,6 +73,7 @@ export const useUserData = create<userDataComplete>((set , get)=>({
         Fuel: 100,
         TrackName: "",
         TrackLocation: "",
+        Rotation: 0
     },
 
     setData:(telemetry:data):void=>{
