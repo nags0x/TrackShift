@@ -5,10 +5,10 @@ import struct
 import os
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-CSV_FILE = "telemetry_with_steering.csv"
+CSV_FILE = "telemetry.csv"
 
-UDP_IP = "jojoisdead-36185.portmap.host"
-UDP_PORT = 36185
+UDP_IP = "127.0.0.1"
+UDP_PORT = 4443
 ACK_PORT = 3001
 
 
@@ -67,4 +67,4 @@ with open(CSV_FILE, "r") as f:
         data = ",".join(row).encode()
         send_packet(seq, data)
         seq += 1
-        time.sleep(0.1)
+        time.sleep(0.2)

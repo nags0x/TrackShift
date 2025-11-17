@@ -10,8 +10,14 @@ export class ClientServer{
 
  constructor(){
     const BackendUrl = import.meta.env.VITE_BACKEND_URL
+
     console.log("Backend :",BackendUrl)
-    this.clientSocket = io(BackendUrl);
+
+    this.clientSocket = io(BackendUrl , ({
+      reconnectionAttempts:5,
+      autoConnect:true,
+    }))
+
     this.SocketHandler();
  }
  static getInstance(){
@@ -77,7 +83,7 @@ export class ClientServer{
         //   console.log(telemetry.EngineVibration)
         // console.log("brake:: ",telemetry.Brake)
 
-          useUserData.getState().setData(telemetry)
+          useUserData.getState().setData(telemetry) //Responsible for updating the data to the ui
 
 
     })

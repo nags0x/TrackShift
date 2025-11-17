@@ -1,12 +1,16 @@
 import express, { json, urlencoded } from "express";
 import cookieParser from "cookie-parser";
+import cors from 'cors'
+
 const app = express()
 
  app.use(json({
     limit:'16kb',
  }))
 
-
+app.use(cors({
+   origin:"*",
+}))
 
 app.use(cookieParser())
 
